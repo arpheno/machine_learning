@@ -1,0 +1,30 @@
+# Stdlib
+from functools import partial
+from itertools import chain
+from pprint import pprint as print
+
+import numpy as np
+import pandas as pd
+
+pd.set_option('display.max_columns',102)
+pd.set_option('display.max_colwidth', -1)
+pd.set_option('display.width',120)
+import sklearn
+print(f'numpy {np.__version__} pandas {pd.__version__} sklearn {sklearn.__version__}')
+
+# Visualization
+
+%matplotlib inline
+import matplotlib as mpl
+import matplotlib.pyplot as plt
+import seaborn as sns
+from jupyterthemes import jtplot
+
+custom_style = {'axes.labelcolor': 'white', 'xtick.color': 'white', 'ytick.color': 'white', }
+sns.set_style( rc=custom_style)
+mpl.rcParams['figure.figsize']=(10,10)
+plt.rcParams['figure.figsize']=(10,10)
+jtplot.style('monokai')
+# Custom stuff
+from swozny_ml import *
+from genetic.parameter_optimization import tune_params_genetic

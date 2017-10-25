@@ -1,0 +1,14 @@
+deap
+numpy
+networkx
+matplotlib
+scoop
+names
+fabric3
+termcolor
+numpy
+scipy
+scikit-learn
+tensorflow
+tflearn
+
