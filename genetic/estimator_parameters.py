@@ -7,6 +7,7 @@ from sklearn.linear_model import HuberRegressor, SGDClassifier, RidgeClassifier,
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.svm import SVC, SVR
 from sklearn.tree import DecisionTreeClassifier, ExtraTreeClassifier
+from xgboost import XGBClassifier
 
 from genetic.evolution.parameters import FloatParam, CategoricalParam, IntParam
 
@@ -79,6 +80,11 @@ params = {
             max_features=(CategoricalParam, ['log2', 'sqrt', 'auto', None]),
             n_estimators=(IntParam, 1)
         ),
+    XGBClassifier:dict(
+        learning_rate=(FloatParam, 0.1),
+        max_depth=(IntParam, 1),
+        n_estimators=(IntParam, 1),
+    ),
     KNeighborsClassifier: dict(
         leaf_size=(IntParam, 3),
         n_neighbors=(IntParam, 5)

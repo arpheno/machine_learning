@@ -9,8 +9,9 @@ from sklearn.linear_model import RidgeClassifier, SGDClassifier, PassiveAggressi
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.svm import SVC, SVR
 from sklearn.tree import DecisionTreeClassifier, ExtraTreeClassifier
+from xgboost import XGBClassifier
 
-LEARNING_RATE = [ 0.01, 0.1]
+LEARNING_RATE = [0.01, 0.1]
 GENERIC_FLOAT = [0.0, 0.5, 0.66666666666666663, 0.33333333333333331, 0.16666666666666666, 0.83333333333333326, 1.0,
                  1.1666666666666665, 1.3333333333333333, 1.5]
 GENERIC_IMPURITY = [0.0, 0.5, 0.66666666666666663, 0.33333333333333331, 0.16666666666666666, 0.83333333333333326, 1.0,
@@ -40,12 +41,18 @@ _manual_overrides = {AdaBoostClassifier: {'algorithm': ['SAMME.R', 'SAMME'],
                      ExtraTreeClassifier: {'criterion': ['gini', 'entropy'], 'splitter': ['best', 'random']},
                      ExtraTreesClassifier: {'criterion': ['gini', 'entropy'], },
                      GaussianProcessRegressor: {'alpha': ALPHA},
+
+                     XGBClassifier: dict(
+                         learning_rate=[0.1, 0.01],
+                         max_depth=[3, 5, 7],
+                         n_estimators=[10, 30, 50, 70]
+                     ),
                      GradientBoostingClassifier: {
                          # 'criterion': ['mse', 'mae'],
-                                              'learning_rate': LEARNING_RATE,
-                                                  # 'loss': ['exponential', 'deviance'],
-                                              'n_estimators': ESTIMATORS,
-                                                  },
+                         'learning_rate': LEARNING_RATE,
+                         # 'loss': ['exponential', 'deviance'],
+                         'n_estimators': ESTIMATORS,
+                     },
                      GradientBoostingRegressor: {'learning_rate': LEARNING_RATE,
                                                  'loss': ['ls', 'lad', 'huber', 'quantile'],
                                                  'n_estimators': ESTIMATORS},
@@ -66,6 +73,7 @@ manual_overrides = defaultdict(lambda: defaultdict(list))
 manual_overrides.update(_manual_overrides)
 
 import itertools
+
 if __name__ == '__main__':
     for key, value in manual_overrides.items():
         print(f'{key.__name__} has {len(list(itertools.product(*itertools.chain(value.values()))))} combinations')
