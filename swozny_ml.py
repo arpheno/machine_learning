@@ -12,12 +12,13 @@ from swozny_overrides import manual_overrides
 
 def benchmark_models(model_classes: List[type], X_train, y_train, scoring='neg_mean_absolute_error', verbose=False):
     results = pd.DataFrame()
-    max_len = max(len(f'Evaluating {model_cls.__name__}...') for model_cls in model_classes)
-    for model_cls in model_classes:
+    models = [model_cls() for model_cls in model_classes]
+    max_len = max(len(f'Evaluating {model.__class__.__name__}...') for model in models)
+    for model in models:
         try:
-            print(f'Evaluating {model_cls.__name__:{max_len}s}', end='...')
-            result = cross_val_score(model_cls(), X=X_train, y=y_train, cv=4, n_jobs=4, scoring=scoring)
-            results = results.append(pd.Series(dict(Mean=result.mean(), Std=result.std(), Algorithm=model_cls)),
+            print(f'Evaluating {model.__class__.__name__:{max_len}s}', end='...')
+            result = cross_val_score(model, X=X_train, y=y_train, cv=4, n_jobs=4, scoring=scoring)
+            results = results.append(pd.Series(dict(Mean=result.mean(), Std=result.std(), Algorithm=model.__class__)),
                                      ignore_index=True, )
             print(f' Score {result.mean():4.2f}')
         except Exception as e:
@@ -42,7 +43,7 @@ def tune_params(model_classes: List[type], X_train, y_train, scoring='neg_mean_a
         clf = GridSearchCV(model, hypers, scoring=scoring, n_jobs=4, cv=4)
         clf.fit(X_train, y_train)
         best_models.append(clf.best_estimator_)
-        print(clf.best_score_)  # ,clf.best_params_)
+        print(clf.best_score_,clf.best_params_)  # ,clf.best_params_)
     return best_models
 
 

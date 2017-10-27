@@ -12,7 +12,6 @@ class BaseParam(object):
         self.default = default
         if self.default == 0:
             self.default = 1
-        self.rough = True
         self.value = None
         self.mutate()
 
@@ -28,18 +27,12 @@ class BaseParam(object):
 
 class FloatParam(BaseParam):
     def mutate(self):
-        if self.rough:
-            self.value = 10 ** random.randint(-3, 3) * self.default
-        else:
-            self.value += random.gauss(0, .5) * self.default
+            self.value += self.default * random.gauss(0, 1)
 
 
 class IntParam(BaseParam):
     def mutate(self):
-        if self.rough:
-            self.value = self.default * 10 ** random.randint(1, 3)
-        else:
-            self.value += int(self.default * random.gauss(0, .5))
+        self.value += int(self.default * random.gauss(0, 1))
 
 
 class CategoricalParam(BaseParam):
