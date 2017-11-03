@@ -17,12 +17,12 @@ def benchmark_models(model_classes: List[type], X_train, y_train, scoring='neg_m
     for model in models:
         try:
             print(f'Evaluating {model.__class__.__name__:{max_len}s}', end='...')
-            result = cross_val_score(model, X=X_train, y=y_train, cv=4, n_jobs=4, scoring=scoring)
+            result = cross_val_score(model, X=X_train, y=y_train, cv=10, n_jobs=-1, scoring=scoring)
             results = results.append(pd.Series(dict(Mean=result.mean(), Std=result.std(), Algorithm=model.__class__)),
                                      ignore_index=True, )
             print(f' Score {result.mean():4.2f}')
         except Exception as e:
-            if verbose == True:
+            if True:
                 print(f' failed. with{e}')
             else:
                 print(f' failed')
@@ -40,7 +40,7 @@ def tune_params(model_classes: List[type], X_train, y_train, scoring='neg_mean_a
     best_models = []
     for model, hypers in model_classes.items():
         print(f'Tuning {model.__class__.__name__} with {hypers}...')
-        clf = GridSearchCV(model, hypers, scoring=scoring, n_jobs=4, cv=4)
+        clf = GridSearchCV(model, hypers, scoring=scoring, n_jobs=-1, cv=5)
         clf.fit(X_train, y_train)
         best_models.append(clf.best_estimator_)
         print(clf.best_score_,clf.best_params_)  # ,clf.best_params_)
@@ -58,7 +58,7 @@ def linear_ensemble(regressors, X_train, y_train, scoring='neg_mean_absolute_err
 
 
 def plot_learning_curve(estimator, title, X, y, ylim=None, cv=None,
-                        n_jobs=-1, train_sizes=np.linspace(.1, 1.0, 5)):
+                        n_jobs=-1, train_sizes=np.linspace(.1, 1.0, 5),scoring='neg_log_loss'):
     """Generate a simple plot of the test and training learning curve"""
     plt.figure()
     plt.title(title)
@@ -67,7 +67,7 @@ def plot_learning_curve(estimator, title, X, y, ylim=None, cv=None,
     plt.xlabel("Training examples")
     plt.ylabel("Score")
     train_sizes, train_scores, test_scores = learning_curve(
-        estimator, X, y, cv=cv, n_jobs=n_jobs, train_sizes=train_sizes, scoring='neg_mean_absolute_error')
+        estimator, X, y, cv=cv, n_jobs=n_jobs, train_sizes=train_sizes, scoring=scoring)
     train_scores_mean = np.mean(train_scores, axis=1)
     train_scores_std = np.std(train_scores, axis=1)
     test_scores_mean = np.mean(test_scores, axis=1)

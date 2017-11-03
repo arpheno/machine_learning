@@ -9,7 +9,7 @@ from sklearn.linear_model import RidgeClassifier, SGDClassifier, PassiveAggressi
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.svm import SVC, SVR
 from sklearn.tree import DecisionTreeClassifier, ExtraTreeClassifier
-from xgboost import XGBClassifier
+from xgboost import XGBClassifier, XGBRegressor
 
 LEARNING_RATE = [0.01, 0.1]
 GENERIC_FLOAT = [0.0, 0.5, 0.66666666666666663, 0.33333333333333331, 0.16666666666666666, 0.83333333333333326, 1.0,
@@ -42,6 +42,11 @@ _manual_overrides = {AdaBoostClassifier: {'algorithm': ['SAMME.R', 'SAMME'],
                      ExtraTreesClassifier: {'criterion': ['gini', 'entropy'], },
                      GaussianProcessRegressor: {'alpha': ALPHA},
 
+                     XGBRegressor: dict(
+                         learning_rate=[0.005, 0.01,0.02,0.03,0.04,0.05,0.06],
+                         max_depth=[7,9,11],
+                         n_estimators=[100,200,300,400,500,600,700]
+                     ),
                      XGBClassifier: dict(
                          learning_rate=[0.1, 0.01],
                          max_depth=[3, 5, 7],

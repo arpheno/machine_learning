@@ -9,7 +9,9 @@ from sklearn.svm import SVC, SVR
 from sklearn.tree import DecisionTreeClassifier, ExtraTreeClassifier
 from xgboost import XGBClassifier
 
-from genetic.evolution.parameters import FloatParam, CategoricalParam, IntParam
+from genetic.evolution.parameters.categorical_param import CategoricalParam
+from genetic.evolution.parameters.float_param import FloatParam
+from genetic.evolution.parameters.int_param import IntParam
 
 params = {
     # Regressors
