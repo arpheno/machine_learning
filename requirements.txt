@@ -11,4 +11,5 @@ scipy
 scikit-learn
 tensorflow
 tflearn
-
+lightgbm
+xgboost

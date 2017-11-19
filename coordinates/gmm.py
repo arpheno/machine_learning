@@ -1,3 +1,4 @@
+""" GMM based clustering for x-y coordinates including visualization"""
 import matplotlib as mpl
 import matplotlib.pyplot as plt
 import numpy as np

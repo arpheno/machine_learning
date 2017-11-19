@@ -19,14 +19,14 @@ class Individual:
     def objective(self):
         return 0
 
-    def set_fine(self):
+    def set_sigma(self, sigma):
         for param in self.inner.values():
-            param.rough = False
+            param.sigma = sigma
 
-    def __init__(self, params, *args, **kwargs):
+    def __init__(self, inner, *args, **kwargs):
         self.name = names.get_full_name()
         self.fitness = FitnessMax()
-        self.inner = {attr: param(default=default) for attr, (param, default) in params.items()}
+        self.inner = inner
 
     def __deepcopy__(self, memodict={}):
         obj = copy(self)
@@ -52,6 +52,9 @@ class Individual:
                 mutant.inner[attr].mutate()
         del mutant.fitness.values
         return mutant
+
+    def __lt__(self, other):
+        return self.objective < other.objective
 
     def __eq__(self, other):
         return hash(self) == hash(other)

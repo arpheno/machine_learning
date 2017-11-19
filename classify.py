@@ -1,12 +1,13 @@
+from genetic.estimator_parameters import params
 from sklearn.calibration import CalibratedClassifierCV
 from sklearn.ensemble import VotingClassifier
 from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import confusion_matrix
 from sklearn.model_selection import cross_val_predict, cross_val_score
 
-from genetic.estimator_parameters import params
 from genetic.parameter_optimization import tune_params_genetic
-from swozny_ml import benchmark_models, tune_params
+from ml.benchmark import benchmark_models
+from swozny_ml import tune_params
 
 # Config
 filename = 'data.csv'
