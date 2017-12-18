@@ -2,7 +2,7 @@
 from functools import partial
 # noinspection PyUnresolvedReferences
 from itertools import chain
-from pprint import pprint as print
+from pprint import pprint
 from typing import List
 
 import numpy as np
@@ -30,6 +30,13 @@ from sklearn.model_selection import GridSearchCV
 from ml.data_cleaning import *
 from ml.univariate import *
 from ml.benchmark import *
+from ml.imputation import *
+# noinspection PyUnresolvedReferences
+from ml.visualization import *
+# noinspection PyUnresolvedReferences
+from estimators import regressors
+# noinspection PyUnresolvedReferences
+from ml.decomposition import *
 
 
 def tune_params(model_classes: List[type], X_train, y_train, scoring):

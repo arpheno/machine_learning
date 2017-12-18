@@ -1,5 +1,3 @@
-from functools import partial
-
 import pandas as pd
 from sklearn.linear_model import LogisticRegression
 
@@ -10,6 +8,7 @@ def impute_logistic(data, target, scale, categorical, scoring):
     from sklearn.preprocessing import StandardScaler
     # Prepare data
     from copy import deepcopy
+    print(f"Imputing  {data[target].isnull().sum()/len(data[target])} percent missing values of {target}")
     prediction_params = scale + categorical
     training_cond = data[target].notnull()
     y_train = data[training_cond][target]
@@ -20,7 +19,7 @@ def impute_logistic(data, target, scale, categorical, scoring):
     prediction_params = [param for param in _data.columns if
                          any(param.startswith(dummy) for dummy in prediction_params)]
     X_train = _data[training_cond][prediction_params]
-    classifiers = [LogisticRegression( multi_class='multinomial', solver='lbfgs')]
+    classifiers = [LogisticRegression(multi_class='multinomial', solver='lbfgs')]
     m = LogisticRegression(multi_class='multinomial', solver='lbfgs')
     m.fit(X_train, y_train)
 
@@ -29,7 +28,7 @@ def impute_logistic(data, target, scale, categorical, scoring):
     return data
 
 
-def impute_linear(data, target, scale, categorical, scoring):
+def impute_linear(data, target, scale, categorical, scoring, model_name=None):
     from sklearn.preprocessing import StandardScaler
     # Prepare data
     from copy import deepcopy
@@ -42,10 +41,10 @@ def impute_linear(data, target, scale, categorical, scoring):
     prediction_params = [param for param in _data.columns if
                          any(param.startswith(dummy) for dummy in prediction_params)]
     X_train = _data[training_cond][prediction_params]
-    benchmark = benchmark_models( X_train, y_train, scoring=scoring)
-    m=benchmark[benchmark.idxmax('Mean')]
-    m.fit(X_train, y_train)
+    benchmark = benchmark_models(X_train, y_train, scoring=scoring, model=model_name)
+    model = benchmark.iloc[benchmark['Mean'].idxmax(), 2]
+    model.fit(X_train, y_train)
 
     X_test = _data[~training_cond][prediction_params]
-    data.loc[~training_cond, target] = m.predict(X_test)
+    data.loc[~training_cond, target] = model.predict(X_test)
     return data

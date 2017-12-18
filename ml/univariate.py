@@ -6,6 +6,7 @@ import seaborn as sns
 from matplotlib import pyplot as plt
 from scipy import stats
 from scipy.stats import norm, skew
+import warnings
 
 
 def init_boxcox() -> Tuple[Callable, Callable]:
@@ -13,21 +14,22 @@ def init_boxcox() -> Tuple[Callable, Callable]:
     from scipy.stats import boxcox as forward
     lambdas = dict()
 
-    def myforward(raw_data: pd.Series):
-        raw_data = raw_data.copy()
-        data = raw_data.dropna()
-        transformed, lambdas[data.name] = forward(1 + data)
-        if abs(lambdas[data.name]) < 0.01:
-            lambdas[data.name] = 0
-            transformed = np.log1p(data)
-        transformed = pd.Series(transformed, index=data.index)
-        after, before = skew(transformed), skew(data)
-        if abs(after) < abs(before):
-            print(f'Reduced skew from {before:.4f} to {after:.4f} for {raw_data.name}')
-            raw_data.update(transformed)
-        else:
-            print(f'Failed to reduce skew with BoxCox for {raw_data.name}')
-        return raw_data
+    def myforward(raw_data: pd.Series,lambdas = lambdas):
+        with warnings.catch_warnings():
+            raw_data = raw_data.copy()
+            data = raw_data.dropna()
+            transformed, lambdas[data.name] = forward(1 + data)
+            if abs(lambdas[data.name]) < 0.01:
+                lambdas[data.name] = 0
+                transformed = np.log1p(data)
+            transformed = pd.Series(transformed, index=data.index)
+            after, before = skew(transformed), skew(data)
+            if abs(after) < abs(before):
+                print(f'Reduced skew from {before:.4f} to {after:.4f} for {raw_data.name}')
+                raw_data.update(transformed)
+            else:
+                print(f'Failed to reduce skew with BoxCox for {raw_data.name}')
+            return raw_data
 
     def myinverse(raw_data: pd.Series):
         raw_data = raw_data.copy()

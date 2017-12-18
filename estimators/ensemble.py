@@ -15,9 +15,12 @@ xgb_base = {
     **base,
     'min_child_weight': [1, 3, 5],
     'gamma': expon(0, 0.3),
+    'reg_alpha': expon(0, 0.3),
+    'reg_lambda': expon(1, 0.3),
     'max_depth': [7, 9, 11],
     'subsample': uniform(0.5, 0.5),
     'colsample_bytree': uniform(0.5, 0.5),
+    'colsample_bylevel': uniform(0.5, 0.5),
 }
 
 XGBRegressor.hyperparameters = {**xgb_base}
@@ -41,7 +44,7 @@ gbm_base = {
     'criterion': ['mse', 'mae'],
     'max_features': ['log2', 'sqrt', 'auto', None],
 }
-GradientBoostingRegressor.hyperparameters = {**gbm_base, 'loss': ['ls', 'lad', 'huber', 'quantile']}
+GradientBoostingRegressor.hyperparameters = {**gbm_base, 'loss': ['ls', 'lad', 'huber', 'quantile'], }
 GradientBoostingClassifier.hyperparameters = {**gbm_base, 'loss': ['exponential', 'deviance'], }
 
 # Random forests don't actually have learning rates

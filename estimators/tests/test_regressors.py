@@ -20,4 +20,4 @@ def y_boston():
 
 @pytest.mark.parametrize("model", regressors)
 def test_regressor(model, X_boston, y_boston):
-    score_model(model, X_boston, y_boston, 'neg_mean_squared_error', 1)
+    score_model(model, X_boston, y_boston, 'neg_mean_squared_error', 5)

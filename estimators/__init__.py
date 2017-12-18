@@ -1,9 +1,10 @@
 from sklearn.base import is_classifier, is_regressor, BaseEstimator
 
-from .ensemble import *
-from .gaussian import *
+from .dummy import *
 from .linear import *
+from .gaussian import *
 from .svm import *
+from .ensemble import *
 
 
 class TunableEstimator(BaseEstimator):

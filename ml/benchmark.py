@@ -7,24 +7,27 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 import seaborn as sns
+from scipy.stats import skew
 from sklearn.base import BaseEstimator
 from sklearn.model_selection import cross_val_score, ParameterSampler
 
 from estimators import classifiers, regressors, TunableEstimator
 
 
-def benchmark_models(X, y, scoring, n_iter=5):
+def benchmark_models(X, y, scoring, n_iter=5, model=None):
     """ Cookie cutter method, does a lot of things, is expensive."""
-    print(f'Predicting {y.name} ', end='')
+    print(f'Predicting {y.name}', end=' ')
     plt.figure()
     if y.dtype != np.number or len(y.unique()) < 15:
-        print(f'and it is a classification problem')
+        print(f'and it is a classification problem ')
         sns.countplot(y)
         models = classifiers
     else:
-        print(f'and it is a regression problem')
+        print(f'as a regression problem with mean {y.mean()},skew {skew(y)}, and std {y.std()}')
         sns.distplot(y)
         models = regressors
+    if model:
+        models = [m for m in models if m.__name__ == model]
     results = pd.DataFrame(score_model(model, X, y, scoring, n_iter) for model in models)
     return results
 
@@ -35,7 +38,7 @@ def score_model(model: TunableEstimator, X: pd.DataFrame, y: pd.Series, scoring,
     p = chain([defaults], ParameterSampler(param_distributions=model.hyperparameters, n_iter=n_iter))
     print(f'Evaluating {model.__name__}', end='...')
     best = max([score_parametrization(model(**hyper_params), X, y, scoring) for hyper_params in p], key=itemgetter(0))
-    print(f'... best is {best[0]}.')
+    print(f'... best is {best[0]:4.2f}. params: {best[2]}')
     return pd.Series(best, index=['Mean', 'Std', 'Model'])
 
 
@@ -52,5 +55,6 @@ def score_parametrization(model, X_train: pd.DataFrame, y_train, scoring) -> Tup
 def suppress_and_log(exceptions=[]):
     try:
         yield
-    except Exception:
+    except Exception as e:
+        print(e)
         print(f'failed', end=' ')
